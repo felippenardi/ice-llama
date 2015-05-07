@@ -6,6 +6,14 @@ var pg = require('pg');
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
+app.get('/', function(request, response) {
+    var result = ''
+    var times = process.env.TIMES || 5
+    for (i=0; i < times; i++)
+      result += cool();
+  response.send(result);
+});
+
 app.get('/db', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * FROM test_table', function(err, result) {
@@ -15,14 +23,6 @@ app.get('/db', function (request, response) {
     });
   });
 })
-
-app.get('/', function(request, response) {
-    var result = ''
-    var times = process.env.TIMES || 5
-    for (i=0; i < times; i++)
-      result += cool();
-  response.send(result);
-});
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
